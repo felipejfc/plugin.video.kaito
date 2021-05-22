@@ -514,9 +514,18 @@ class AniListBrowser(object):
 
         return  database.get_show(str(res['id']))
 
+    # TODO: extract to a utils class
+    def _remove_html_tags(self, text):
+        import re
+        clean = re.compile('<.*?>')
+        return re.sub(clean, '', text)
+
     def _base_anilist_view(self, res, mal_dub=None):
         in_database = database.get_show(str(res['id']))
-
+        try:
+            res['description'] = self._remove_html_tags(res['description'])
+        except:
+            pass
         if not in_database:
             self._database_update_show(res)
 
